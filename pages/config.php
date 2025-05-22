@@ -2,7 +2,7 @@
 $serveur = "localhost";
 $utilisateur = 'root';
 $pass = "";
-$dbname = "projet-web";
+$dbname = "support_system";
 
 try {
     $connexion = new PDO("mysql:host=$serveur;dbname=$dbname", $utilisateur, $pass);

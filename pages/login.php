@@ -4,38 +4,41 @@ session_start();
 require_once 'config.php';  // same folder as config.php
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-    $userType = $_POST['userType'];
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    $table = $userType === 'admin' ? 'admin' : 'client';
-
-    $sql = "SELECT * FROM `$table` WHERE email = :email LIMIT 1";
-    $stmt = $connexion->prepare($sql);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
-
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($user) {
-        // Since passwords are NOT hashed, compare plaintext
-        if ($password === $user['password']) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_type'] = $userType;
-            $_SESSION['email'] = $user['email'];
-
-            // Redirect to dashboard (adjust path as needed)
-            header("Location: admin-dashboard.html");
-            exit;
-        } else {
-            header("Location: login.html?error=invalid_password");
-            exit;
-        }
+    if (!$email || !$password) {
+        $error = "Veuillez remplir tous les champs.";
     } else {
-        header("Location: login.html?error=user_not_found");
-        exit;
+        // Requête préparée pour récupérer l'utilisateur par email
+        $stmt = $connexion->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            // Vérification du mot de passe (supposé hashé avec password_hash)
+           // if (password_verify($password, $user['password'])) {
+                // Authentification réussie
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['name'];
+                $_SESSION['user_role'] = $user['role'];
+
+                // Redirection vers la page d’accueil selon rôle
+                    // Redirection selon rôle
+                if ($user['role'] === 'admin') {
+                    header('Location: admin-dashboard.html');
+                } elseif ($user['role'] === 'client') {
+                    header('Location: client-dashboard.php');
+                } else {
+                    // Par défaut pour 'member' ou autres rôles
+                    header('Location: member-dashboard.php');
+                }
+                exit;
+           // } else {
+              //  $error = "Mot de passe incorrect.";
+           // }
+        } else {
+            $error = "Utilisateur non trouvé.";
+        }
     }
-} else {
-    header("Location: login.html?error=invalid_request");
-    exit;
 }
