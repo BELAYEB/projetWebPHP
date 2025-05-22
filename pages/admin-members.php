@@ -50,75 +50,122 @@ $members = $pdo->query("SELECT * FROM users WHERE role = 'member' ORDER BY id DE
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Gestion des membres</title>
     <style>
-        body { font-family: Arial; padding: 20px; background: #f4f4f4; }
-        h2 { margin-bottom: 20px; }
-        table { width: 100%; background: white; border-collapse: collapse; margin-bottom: 30px; }
-        th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
-        form { background: white; padding: 15px; border: 1px solid #ccc; }
-        input { width: 100%; padding: 8px; margin: 5px 0; }
-        button { padding: 8px 12px; }
-        .actions a { margin-right: 10px; text-decoration: none; }
-        .edit { color: blue; }
-        .delete { color: red; }
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        form {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+        }
+
+        button {
+            padding: 8px 12px;
+        }
+
+        .actions a {
+            margin-right: 10px;
+            text-decoration: none;
+        }
+
+        .edit {
+            color: blue;
+        }
+
+        .delete {
+            color: red;
+        }
     </style>
 </head>
+
 <body>
 
-<h2>👥 Gestion des membres — Admin : <?= htmlspecialchars($_SESSION['user_name']) ?></h2>
+    <h2>👥 Gestion des membres — Admin : <?= htmlspecialchars($_SESSION['user_name']) ?></h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Créé le</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($members as $m): ?>
+    <table>
+        <thead>
             <tr>
-                <td><?= htmlspecialchars($m['name']) ?></td>
-                <td><?= htmlspecialchars($m['email']) ?></td>
-                <td><?= $m['created_at'] ?? 'N/A' ?></td>
-                <td class="actions">
-                    <a href="?edit=<?= $m['id'] ?>" class="edit">Modifier</a>
-                    <a href="?delete=<?= $m['id'] ?>" class="delete" onclick="return confirm('Supprimer ce membre ?')">Supprimer</a>
-                </td>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Créé le</th>
+                <th>Actions</th>
             </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <?php foreach ($members as $m): ?>
+                <tr>
+                    <td><?= htmlspecialchars($m['name']) ?></td>
+                    <td><?= htmlspecialchars($m['email']) ?></td>
+                    <td><?= $m['created_at'] ?? 'N/A' ?></td>
+                    <td class="actions">
+                        <a href="?edit=<?= $m['id'] ?>" class="edit">Modifier</a>
+                        <a href="?delete=<?= $m['id'] ?>" class="delete"
+                            onclick="return confirm('Supprimer ce membre ?')">Supprimer</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
-<?php
-if (isset($_GET['edit'])):
-    $edit_id = $_GET['edit'];
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id=? AND role='member'");
-    $stmt->execute([$edit_id]);
-    $m = $stmt->fetch();
-    if (!$m) exit("Membre introuvable.");
-    ?>
-    <h3>Modifier le membre</h3>
-    <form method="post">
-        <input type="hidden" name="id" value="<?= $m['id'] ?>">
-        <input type="text" name="name" value="<?= htmlspecialchars($m['name']) ?>" required>
-        <input type="email" name="email" value="<?= htmlspecialchars($m['email']) ?>" required>
-        <button type="submit" name="update">Mettre à jour</button>
-        <a href="admin-members.php">Annuler</a>
-    </form>
-<?php else: ?>
-    <h3>Ajouter un nouveau membre</h3>
-    <form method="post">
-        <input type="text" name="name" placeholder="Nom complet" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Mot de passe" required>
-        <button type="submit" name="add">Ajouter</button>
-    </form>
-<?php endif; ?>
+    <?php
+    if (isset($_GET['edit'])):
+        $edit_id = $_GET['edit'];
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE id=? AND role='member'");
+        $stmt->execute([$edit_id]);
+        $m = $stmt->fetch();
+        if (!$m)
+            exit("Membre introuvable.");
+        ?>
+        <h3>Modifier le membre</h3>
+        <form method="post">
+            <input type="hidden" name="id" value="<?= $m['id'] ?>">
+            <input type="text" name="name" value="<?= htmlspecialchars($m['name']) ?>" required>
+            <input type="email" name="email" value="<?= htmlspecialchars($m['email']) ?>" required>
+            <button type="submit" name="update">Mettre à jour</button>
+            <a href="admin-members.php">Annuler</a>
+        </form>
+    <?php else: ?>
+        <h3>Ajouter un nouveau membre</h3>
+        <form method="post">
+            <input type="text" name="name" placeholder="Nom complet" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <button type="submit" name="add">Ajouter</button>
+        </form>
+    <?php endif; ?>
 
 </body>
+
 </html>
