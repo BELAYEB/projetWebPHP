@@ -60,7 +60,7 @@ session_start();
               </a>
             </li>
             <li>
-              <a href="admin-analytics.html">
+              <a href="admin-analytics.php">
                 <i class="fas fa-chart-line"></i>
                 <span>Analytics</span>
               </a>
