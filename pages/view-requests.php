@@ -1,9 +1,10 @@
 <?php
 require_once 'config.php';
-$pdo = new PDO("mysql:host=localhost;dbname=projet-web", "root", "");
-
+$pdo = new PDO("mysql:host=localhost;dbname=support_system", "root", "");
+session_start();
 // Fetch the service requests
-$stmt = $pdo->query("SELECT id, request_title,status, request_type, actions,last_updated,  request_priority, LEFT(created_at, 10) AS created_at FROM requests");
+$stmt = $pdo->query("SELECT id, title,status, type,  priority, LEFT(created_at, 10) AS created_at FROM request");
+
 ?>
 <html lang="en">
 
@@ -28,7 +29,7 @@ $stmt = $pdo->query("SELECT id, request_title,status, request_type, actions,last
       <div class="sidebar-content">
         <ul class="sidebar-menu">
           <li>
-            <a href="client-dashboard.html">
+            <a href="client-dashboard.php">
               <i class="fas fa-tachometer-alt"></i>
               <span>Dashboard</span>
             </a>
@@ -45,18 +46,8 @@ $stmt = $pdo->query("SELECT id, request_title,status, request_type, actions,last
               <span>My Requests</span>
             </a>
           </li>
-          <li>
-            <a href="profile.html">
-              <i class="fas fa-user"></i>
-              <span>Profile</span>
-            </a>
-          </li>
-          <li>
-            <a href="settings.html">
-              <i class="fas fa-cog"></i>
-              <span>Settings</span>
-            </a>
-          </li>
+    
+     
         </ul>
       </div>
       <div class="sidebar-footer">
@@ -73,9 +64,9 @@ $stmt = $pdo->query("SELECT id, request_title,status, request_type, actions,last
           <h1>My Service Requests</h1>
         </div>
         <div class="header-right">
-          <div class="user-profile">
-            <img src="" alt="User Avatar" id="userAvatar" />
-            <span id="userName">Name</span>
+         <div class="user-profile">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s" alt="User Avatar" id="userAvatar" />
+            <span id="userName"><?= $_SESSION['user_name'] ?> </span>
           </div>
         </div>
       </header>
@@ -190,7 +181,6 @@ $stmt = $pdo->query("SELECT id, request_title,status, request_type, actions,last
     </main>
   </div>
 
-  &lt;!-- Request Details Modal -->
   <div id="requestDetailsModal" class="modal">
     <div class="modal-content modal-lg">
       <div class="modal-header">

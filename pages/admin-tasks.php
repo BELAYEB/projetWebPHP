@@ -1,19 +1,20 @@
 <?php
 require_once 'config.php';
-$pdo = new PDO("mysql:host=localhost;dbname=projet-web", "root", "");
+$pdo = new PDO("mysql:host=localhost;dbname=support_system", "root", "");
 
-$inprogressStmt = $pdo->query("SELECT * FROM task WHERE statut = 'in progress'");
+
+$inprogressStmt = $pdo->query("SELECT * FROM task WHERE status = 'in progress'");
 $totaltasksinprogress = $inprogressStmt->rowCount();
 
-$todoStmt = $pdo->query("SELECT * FROM task WHERE statut = 'to do'");
+$todoStmt = $pdo->query("SELECT * FROM task WHERE status = 'to do'");
 $totaltaskstodo = $todoStmt->rowCount();
 
-$reviewStmt = $pdo->query("SELECT * FROM task WHERE statut = 'review'");
+$reviewStmt = $pdo->query("SELECT * FROM task WHERE status = 'review'");
 $reviw = $reviewStmt->rowCount();
 
-$completedStmt = $pdo->query("SELECT * FROM task WHERE statut = 'completed'");
+$completedStmt = $pdo->query("SELECT * FROM task WHERE status = 'completed'");
 $completed = $completedStmt->rowCount();
-
+session_start()
 
 ?>
 
@@ -40,7 +41,7 @@ $completed = $completedStmt->rowCount();
             <div class="sidebar-content">
                 <ul class="sidebar-menu">
                     <li>
-                        <a href="admin-dashboard.html">
+                        <a href="admin-dashboard.php">
                             <i class="fas fa-tachometer-alt"></i>
                             <span>Dashboard</span>
                         </a>
@@ -90,13 +91,11 @@ $completed = $completedStmt->rowCount();
                 <div class="header-left">
                     <h1>Task Board</h1>
                 </div>
-                <div class="header-right">
-
-                    <div class="user-profile">
-                        <img src="../assets/images/admin-avatar.svg" alt="Admin Avatar" id="userAvatar">
-                        <span id="userName">Name</span>
-                    </div>
-                </div>
+              <div class="header-right">
+             <div class="user-profile">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s" alt="User Avatar" id="userAvatar" />
+            <span id="userName"><?= $_SESSION['user_name'] ?> </span>
+          </div>
             </header>
 
             <div class="content-body">
@@ -119,11 +118,7 @@ $completed = $completedStmt->rowCount();
                             </div>
                         </div>
                     </div>
-                    <div class="task-board-actions">
-                        <button id="createTaskBtn" class="btn-primary">
-                            <i class="fas fa-plus"></i> Create Task
-                        </button>
-                    </div>
+                
                 </div>
 
                 <div class="kanban-board" id="kanbanBoard">

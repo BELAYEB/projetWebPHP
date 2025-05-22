@@ -42,7 +42,7 @@ session_start();
               </a>
             </li>
             <li>
-              <a href="admin-tasks.html">
+              <a href="admin-tasks.php">
                 <i class="fas fa-tasks"></i>
                 <span>Task Board</span>
               </a>
@@ -54,7 +54,7 @@ session_start();
               </a>
             </li>
             <li>
-              <a href="member.html">
+              <a href="admin-members.php">
                 <i class="fas fa-users"></i>
                 <span>Members</span>
               </a>
@@ -81,15 +81,10 @@ session_start();
             <h1>Admin Dashboard</h1>
           </div>
           <div class="header-right">
-            <div class="user-profile">
-              <img
-                src="../assets/images/avatar.png alt="
-                Admin
-                Avatar
-                id="userAvatar"
-              />
-              <span id="userName">name</span>
-            </div>
+             <div class="user-profile">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s" alt="User Avatar" id="userAvatar" />
+            <span id="userName"><?= $_SESSION['user_name'] ?> </span>
+          </div>
           </div>
         </header>
 
