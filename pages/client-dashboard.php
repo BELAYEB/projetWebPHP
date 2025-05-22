@@ -1,19 +1,18 @@
 <?php
 require_once 'config.php';
-$pdo = new PDO("mysql:host=localhost;dbname=projet-web", "root", "");
+$pdo = new PDO("mysql:host=localhost;dbname=support_system", "root", "");
 session_start();
-$stmt = $pdo->query("SELECT * FROM requests");
+$stmt = $pdo->query("SELECT * FROM request");
 $totalRequests = $stmt->rowCount();
 
-$completedStmt = $pdo->query("SELECT * FROM requests WHERE status = 'completed'");
+$completedStmt = $pdo->query("SELECT * FROM request WHERE status = 'completed'");
 $totalCompletedRequests = $completedStmt->rowCount();
 
-$inprogressStmt = $pdo->query("SELECT * FROM requests WHERE status = 'in progress'");
+$inprogressStmt = $pdo->query("SELECT * FROM request WHERE status = 'in progress'");
 $inprogressRequests = $inprogressStmt->rowCount();
 //var_dump($_SESSION[user_name]);
 ?>
 
-<p id="totalRequests"><?= $totalRequests ?></p>
 
 
 <html lang="en">
@@ -39,7 +38,7 @@ $inprogressRequests = $inprogressStmt->rowCount();
       <div class="sidebar-content">
         <ul class="sidebar-menu">
           <li class="active">
-            <a href="client-dashboard.html">
+            <a href="client-dashboard.php">
               <i class="fas fa-tachometer-alt"></i>
               <span>Dashboard</span>
             </a>
@@ -51,7 +50,7 @@ $inprogressRequests = $inprogressStmt->rowCount();
             </a>
           </li>
           <li>
-            <a href="view-requests.html">
+            <a href="view-requests.php">
               <i class="fas fa-list-alt"></i>
               <span>My Requests</span>
             </a>
@@ -73,8 +72,8 @@ $inprogressRequests = $inprogressStmt->rowCount();
         </div>
         <div class="header-right">
           <div class="user-profile">
-            <img src="" alt="User Avatar" id="userAvatar" />
-            <span id="userName">Name </span>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s" alt="User Avatar" id="userAvatar" />
+            <span id="userName"><?= $_SESSION['user_name'] ?> </span>
           </div>
         </div>
       </header>
@@ -84,12 +83,7 @@ $inprogressRequests = $inprogressStmt->rowCount();
           <h2>Welcome, <?= $_SESSION['user_name'] ?> </span>!</h2>
 
           <div class="dashboard-actions">
-            <button id="customizeDashboardBtn" class="btn-secondary">
-              <i class="fas fa-cog"></i> Customize Dashboard
-            </button>
-            <button id="newRequestBtn" class="btn-primary">
-              <i class="fas fa-plus"></i> New Request
-            </button>
+         
           </div>
         </div>
 
