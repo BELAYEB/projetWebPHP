@@ -68,11 +68,11 @@ $members = $pdo->query("SELECT * FROM users WHERE role = 'member' ORDER BY id DE
       <div class="sidebar-content">
         <ul class="sidebar-menu">
           <li><a href="admin-dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-          <li><a href="admin-requests.html"><i class="fas fa-ticket-alt"></i><span>Service Requests</span></a></li>
+          <li><a href="admin-requests.php"><i class="fas fa-ticket-alt"></i><span>Service Requests</span></a></li>
           <li><a href="admin-tasks.php"><i class="fas fa-tasks"></i><span>Task Board</span></a></li>
-          <li><a href="admin-clients.html"><i class="fas fa-users"></i><span>Clients</span></a></li>
+          <li><a href="admin-clients.php"><i class="fas fa-users"></i><span>Clients</span></a></li>
           <li class="active"><a href="admin-members.php"><i class="fas fa-users"></i><span>Members</span></a></li>
-          <li><a href="admin-analytics.html"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
+          <li><a href="admin-analytics.php"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
         </ul>
       </div>
       <div class="sidebar-footer">

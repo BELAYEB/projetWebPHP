@@ -47,35 +47,30 @@ session_start()
                         </a>
                     </li>
                     <li>
-                        <a href="admin-requests.html">
+                        <a href="admin-requests.php">
                             <i class="fas fa-ticket-alt"></i>
                             <span>Service Requests</span>
                         </a>
                     </li>
                     <li class="active">
-                        <a href="admin-tasks.html">
+                        <a href="admin-tasks.php">
                             <i class="fas fa-tasks"></i>
                             <span>Task Board</span>
                         </a>
                     </li>
                     <li>
-                        <a href="admin-clients.html">
+                        <a href="admin-clients.php">
                             <i class="fas fa-users"></i>
                             <span>Clients</span>
                         </a>
                     </li>
                     <li>
-                        <a href="admin-analytics.html">
+                        <a href="admin-analytics.php">
                             <i class="fas fa-chart-line"></i>
                             <span>Analytics</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="settings.html">
-                            <i class="fas fa-cog"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
+                    
                 </ul>
             </div>
             <div class="sidebar-footer">
