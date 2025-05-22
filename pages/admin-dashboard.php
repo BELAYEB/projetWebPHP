@@ -54,6 +54,12 @@ session_start();
               </a>
             </li>
             <li>
+              <a href="member.html">
+                <i class="fas fa-users"></i>
+                <span>Members</span>
+              </a>
+            </li>
+            <li>
               <a href="admin-analytics.html">
                 <i class="fas fa-chart-line"></i>
                 <span>Analytics</span>
