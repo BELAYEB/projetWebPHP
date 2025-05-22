@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - ContactFlow CRM</title>
+    <title>Register - ContactFlow CRM</title>
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link
       rel="stylesheet"
@@ -18,8 +19,12 @@
           <h1>ContactFlow CRM</h1>
         </div>
         <div class="auth-form">
-          <h2>Login to your account</h2>
-          <form id="loginForm" method="post" action="login.php">
+          <h2>Create your account</h2>
+          <form id="registerForm" method="post" action="register.php">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" required />
+            </div>
             <div class="form-group">
               <label for="email">Email</label>
               <input type="email" id="email" name="email" required />
@@ -29,18 +34,23 @@
               <input type="password" id="password" name="password" required />
             </div>
             <div class="form-group">
-              <label for="userType">Login as</label>
-              <select id="userType" name="userType">
-                <option value="client">Client</option>
-                <option value="admin">Admin</option>
-              </select>
+              <label for="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                required
+              />
             </div>
+
             <div class="form-group">
-              <button type="submit" class="btn-primary btn-block">Login</button>
+              <button type="submit" class="btn-primary btn-block">
+                Register
+              </button>
             </div>
           </form>
           <div class="auth-links">
-            <a href="register.html" id="demoLogin">register</a>
+            <a href="login.html">Already have an account? Login</a>
             <a href="../index.html">Back to Home</a>
           </div>
         </div>
