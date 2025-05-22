@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
 $pdo = new PDO("mysql:host=localhost;dbname=projet-web", "root", "");
-
+session_start();
 $stmt = $pdo->query("SELECT * FROM requests");
 $totalRequests = $stmt->rowCount();
 
@@ -10,6 +10,7 @@ $totalCompletedRequests = $completedStmt->rowCount();
 
 $inprogressStmt = $pdo->query("SELECT * FROM requests WHERE status = 'in progress'");
 $inprogressRequests = $inprogressStmt->rowCount();
+//var_dump($_SESSION[user_name]);
 ?>
 
 <p id="totalRequests"><?= $totalRequests ?></p>
@@ -80,7 +81,8 @@ $inprogressRequests = $inprogressStmt->rowCount();
 
       <div class="dashboard-content">
         <div class="dashboard-header">
-          <h2>Welcome, <span id="welcomeUserName"></span>!</h2>
+          <h2>Welcome, <?= $_SESSION['user_name'] ?> </span>!</h2>
+
           <div class="dashboard-actions">
             <button id="customizeDashboardBtn" class="btn-secondary">
               <i class="fas fa-cog"></i> Customize Dashboard

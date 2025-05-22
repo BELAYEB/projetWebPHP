@@ -1,3 +1,10 @@
+<?php 
+session_start();
+
+?>
+
+
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -47,6 +54,12 @@
               </a>
             </li>
             <li>
+              <a href="member.html">
+                <i class="fas fa-users"></i>
+                <span>Members</span>
+              </a>
+            </li>
+            <li>
               <a href="admin-analytics.html">
                 <i class="fas fa-chart-line"></i>
                 <span>Analytics</span>
@@ -82,7 +95,7 @@
 
         <div class="dashboard-content">
           <div class="dashboard-header">
-            <h2>Welcome, <span id="welcomeUserName">Admin</span>!</h2>
+            <h2>Welcome, <span> <?= $_SESSION['user_name'] ?> </span>!</h2>
             <div class="dashboard-actions">
               <button id="exportDataBtn" class="btn-secondary">
                 <i class="fas fa-download"></i> Export Data
