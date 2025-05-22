@@ -17,26 +17,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user) {
             // Vérification du mot de passe (supposé hashé avec password_hash)
-           // if (password_verify($password, $user['password'])) {
-                // Authentification réussie
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
-                $_SESSION['user_role'] = $user['role'];
+            // if (password_verify($password, $user['password'])) {
+            // Authentification réussie
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['name'];
+            $_SESSION['user_role'] = $user['role'];
 
-                // Redirection vers la page d’accueil selon rôle
-                    // Redirection selon rôle
-                if ($user['role'] === 'admin') {
-                    header('Location: admin-dashboard.html');
-                } elseif ($user['role'] === 'client') {
-                    header('Location: client-dashboard.php');
-                } else {
-                    // Par défaut pour 'member' ou autres rôles
-                    header('Location: member-dashboard.php');
-                }
-                exit;
-           // } else {
-              //  $error = "Mot de passe incorrect.";
-           // }
+            // Redirection vers la page d’accueil selon rôle
+            // Redirection selon rôle
+            if ($user['role'] === 'admin') {
+                header('Location: admin-dashboard.html');
+            } elseif ($user['role'] === 'client') {
+                header('Location: client-dashboard.php');
+            } else {
+                // Par défaut pour 'member' ou autres rôles
+                header('Location: member-dashboard.html');
+
+            }
+            exit;
+            // } else {
+            //  $error = "Mot de passe incorrect.";
+            // }
         } else {
             $error = "Utilisateur non trouvé.";
         }
