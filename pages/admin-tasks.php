@@ -93,12 +93,7 @@ $taskscompleted = $stmticompleted->rowCount();
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="admin-requests.html">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>Service Requests</span>
-                        </a>
-                    </li>
+                 
                     <li class="active">
                         <a href="admin-tasks.php">
                             <i class="fas fa-tasks"></i>
@@ -111,6 +106,8 @@ $taskscompleted = $stmticompleted->rowCount();
                             <span>Clients</span>
                         </a>
                     </li>
+                              <li><a href="admin-members.php"><i class="fas fa-users"></i><span>Members</span></a></li>
+
                     <li>
                         <a href="admin-analytics.php">
                             <i class="fas fa-chart-line"></i>

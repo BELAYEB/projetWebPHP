@@ -1,28 +1,73 @@
 <?php
 require_once 'config.php';
-$pdo = new PDO("mysql:host=localhost;dbname=support_system", "root", "");
 session_start();
-$stmt = $pdo->query("SELECT * FROM request");
-$totalRequests = $stmt->rowCount();
 
-$completedStmt = $pdo->query("SELECT * FROM request WHERE status = 'completed'");
-$totalCompletedRequests = $completedStmt->rowCount();
+// DB Connection
+$pdo = new PDO("mysql:host=localhost;dbname=support_system", "root", "");
 
-$inprogressStmt = $pdo->query("SELECT * FROM request WHERE status = 'in progress'");
-$inprogressRequests = $inprogressStmt->rowCount();
-//var_dump($_SESSION[user_name]);
+// Fetch all requests
+$stmt = $pdo->query("SELECT id, title, status, type, priority, LEFT(created_at, 10) AS created_at FROM request");
+$requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Calculate summary counts
+$totalRequests = count($requests);
+$totalCompletedRequests = 0;
+$inprogressRequests = 0;
+$highPriorityTasks = [];
+
+foreach ($requests as $req) {
+    if (strtolower($req['status']) === 'completed') {
+        $totalCompletedRequests++;
+    }
+    if (strtolower($req['status']) === 'in progress') {
+        $inprogressRequests++;
+    }
+    if (strtolower($req['priority']) === 'high' || strtolower($req['priority']) === 'urgent') {
+        $highPriorityTasks[] = $req;
+    }
+}
 ?>
 
-
-
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Client Dashboard - ContactFlow CRM</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* Basic table styling for dashboard widgets */
+    .widget table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .widget table th,
+    .widget table td {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .widget table th {
+      background-color: #f5f5f5;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #888;
+      padding: 20px 0;
+    }
+
+    .empty-state i {
+      font-size: 40px;
+      margin-bottom: 10px;
+      color: #bbb;
+    }
+  </style>
 </head>
 
 <body>
@@ -55,6 +100,12 @@ $inprogressRequests = $inprogressStmt->rowCount();
               <span>My Requests</span>
             </a>
           </li>
+          <li>
+            <a href="client-feedback.php">
+              <i class="fas fa-list-alt"></i>
+              <span>Feedback</span>
+            </a>
+          </li>
         </ul>
       </div>
       <div class="sidebar-footer">
@@ -74,18 +125,14 @@ $inprogressRequests = $inprogressStmt->rowCount();
           <div class="user-profile">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s"
               alt="User Avatar" id="userAvatar" />
-            <span id="userName"><?= $_SESSION['user_name'] ?> </span>
+            <span id="userName"><?= htmlspecialchars($_SESSION['user_name']) ?></span>
           </div>
         </div>
       </header>
 
       <div class="dashboard-content">
         <div class="dashboard-header">
-          <h2>Welcome, <?= $_SESSION['user_name'] ?> </span>!</h2>
-
-          <div class="dashboard-actions">
-
-          </div>
+          <h2>Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</h2>
         </div>
 
         <div class="dashboard-stats">
@@ -116,134 +163,110 @@ $inprogressRequests = $inprogressStmt->rowCount();
               <p id="completedRequests"><?= $totalCompletedRequests ?></p>
             </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-info">
-              <h3>Avg. Rating</h3>
-              <p id="avgRating">0.0</p>
-            </div>
-          </div>
         </div>
 
         <div class="dashboard-widgets" id="dashboardWidgets">
+
+          <!-- Recent Requests Widget -->
           <div class="widget" data-widget-id="recentRequests">
             <div class="widget-header">
               <h3>Recent Requests</h3>
               <div class="widget-actions">
-                <button class="btn-icon widget-refresh">
+                <button class="btn-icon widget-refresh" onclick="location.reload()">
                   <i class="fas fa-sync-alt"></i>
                 </button>
-                <button class="btn-icon widget-remove">
+                <button class="btn-icon widget-remove" onclick="this.closest('.widget').remove()">
                   <i class="fas fa-times"></i>
                 </button>
               </div>
             </div>
             <div class="widget-content">
-              <div class="request-list" id="recentRequestsList">
+              <?php if (count($requests) === 0): ?>
                 <div class="empty-state">
                   <i class="fas fa-ticket-alt"></i>
                   <p>No recent requests</p>
                 </div>
-              </div>
+              <?php else: ?>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    // Show last 5 requests (most recent first)
+                    $recent = array_slice(array_reverse($requests), 0, 5);
+                    foreach ($recent as $req): ?>
+                      <tr>
+                        <td><?= htmlspecialchars($req['title']) ?></td>
+                        <td><?= htmlspecialchars($req['type']) ?></td>
+                        <td><?= htmlspecialchars($req['status']) ?></td>
+                        <td><?= htmlspecialchars($req['created_at']) ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              <?php endif; ?>
             </div>
             <div class="widget-footer">
-              <a href="request-service.html">View All Requests</a>
+              <a href="view-requests.php">View All Requests</a>
             </div>
           </div>
 
+          <!-- High Priority Tasks Widget -->
           <div class="widget" data-widget-id="highPriorityTasks">
             <div class="widget-header">
               <h3>High Priority Tasks</h3>
               <div class="widget-actions">
-                <button class="btn-icon widget-refresh">
+                <button class="btn-icon widget-refresh" onclick="location.reload()">
                   <i class="fas fa-sync-alt"></i>
                 </button>
-                <button class="btn-icon widget-remove">
+                <button class="btn-icon widget-remove" onclick="this.closest('.widget').remove()">
                   <i class="fas fa-times"></i>
                 </button>
               </div>
             </div>
             <div class="widget-content">
-              <div class="task-list" id="highPriorityTasksList">
+              <?php if (count($highPriorityTasks) === 0): ?>
                 <div class="empty-state">
                   <i class="fas fa-tasks"></i>
                   <p>No high priority tasks</p>
                 </div>
-              </div>
+              <?php else: ?>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Priority</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php foreach ($highPriorityTasks as $task): ?>
+                      <tr>
+                        <td><?= htmlspecialchars($task['title']) ?></td>
+                        <td><?= htmlspecialchars($task['priority']) ?></td>
+                        <td><?= htmlspecialchars($task['status']) ?></td>
+                        <td><?= htmlspecialchars($task['created_at']) ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              <?php endif; ?>
             </div>
           </div>
 
-          <div class="widget" data-widget-id="upcomingTasks">
-            <div class="widget-header">
-              <h3>Upcoming Tasks</h3>
-              <div class="widget-actions">
-                <button class="btn-icon widget-refresh">
-                  <i class="fas fa-sync-alt"></i>
-                </button>
-                <button class="btn-icon widget-remove">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-            <div class="widget-content">
-              <div class="task-list" id="upcomingTasksList">
-                <div class="empty-state">
-                  <i class="fas fa-calendar"></i>
-                  <p>No upcoming tasks</p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </main>
   </div>
 
-  <div id="addWidgetModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Add Widget</h2>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="widget-options">
-          <div class="widget-option" data-widget-id="recentRequests">
-            <i class="fas fa-ticket-alt"></i>
-            <h4>Recent Requests</h4>
-            <p>View your most recent service requests</p>
-          </div>
-          <div class="widget-option" data-widget-id="highPriorityTasks">
-            <i class="fas fa-exclamation-circle"></i>
-            <h4>High Priority Tasks</h4>
-            <p>View tasks marked as high priority</p>
-          </div>
-          <div class="widget-option" data-widget-id="upcomingTasks">
-            <i class="fas fa-calendar"></i>
-            <h4>Upcoming Tasks</h4>
-            <p>View tasks scheduled for the near future</p>
-          </div>
-          <div class="widget-option" data-widget-id="requestStatus">
-            <i class="fas fa-chart-pie"></i>
-            <h4>Request Status</h4>
-            <p>View the status of all your requests</p>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary close-modal">Cancel</button>
-        <button id="addWidgetBtn" class="btn-primary">Add Widget</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="notification" class="notification"></div>
-
-  <script src="../assets/js/localStorage.js"></script>
-  <script src="../assets/js/auth.js"></script>
-  <script src="../assets/js/domUtils.js"></script>
-  <script src="../assets/js/client-dashboard.js"></script>
+  <script src="../assets/js/main.js"></script>
 </body>
 
 </html>

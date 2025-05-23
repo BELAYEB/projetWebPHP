@@ -30,6 +30,21 @@ $fiveStarPercent = $totalFeedbacks > 0 ? round(($fiveStarCount / $totalFeedbacks
 
 // Most recent feedback
 $latestFeedback = $feedbacks[0] ?? null;
+
+// Line chart data: average rating per day
+$lineStmt = $pdo->query("
+  SELECT DATE(created_at) AS date, AVG(rating) AS avg_rating
+  FROM feedback
+  GROUP BY DATE(created_at)
+  ORDER BY DATE(created_at)
+");
+
+$lineChartLabels = [];
+$lineChartData = [];
+while ($row = $lineStmt->fetch(PDO::FETCH_ASSOC)) {
+    $lineChartLabels[] = $row['date'];
+    $lineChartData[] = round($row['avg_rating'], 2);
+}
 ?>
 
 <!DOCTYPE html>
@@ -94,7 +109,7 @@ $latestFeedback = $feedbacks[0] ?? null;
           <li><a href="admin-dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
           <li><a href="admin-requests.php"><i class="fas fa-ticket-alt"></i><span>Service Requests</span></a></li>
           <li><a href="admin-tasks.php"><i class="fas fa-tasks"></i><span>Task Board</span></a></li>
-          <li><a href="admin-clients.phpl"><i class="fas fa-users"></i><span>Clients</span></a></li>
+          <li><a href="admin-clients.php"><i class="fas fa-users"></i><span>Clients</span></a></li>
           <li><a href="admin-members.php"><i class="fas fa-users"></i><span>Members</span></a></li>
           <li class="active"><a href="admin-analytics.php"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
         </ul>
@@ -151,6 +166,11 @@ $latestFeedback = $feedbacks[0] ?? null;
             <h3><i class="fas fa-chart-bar"></i> Ratings Distribution</h3>
             <canvas id="ratingsChart" height="120"></canvas>
           </div>
+
+          <div class="card" style="grid-column: span 2;">
+            <h3><i class="fas fa-chart-line"></i> Average Rating Over Time</h3>
+            <canvas id="lineChart" height="120"></canvas>
+          </div>
         </div>
       </div>
     </main>
@@ -191,6 +211,45 @@ $latestFeedback = $feedbacks[0] ?? null;
         animation: {
           duration: 1000,
           easing: 'easeOutBounce'
+        }
+      }
+    });
+
+    const lineChartLabels = <?= json_encode($lineChartLabels) ?>;
+    const lineChartData = <?= json_encode($lineChartData) ?>;
+
+    const ctxLine = document.getElementById('lineChart').getContext('2d');
+    const lineChart = new Chart(ctxLine, {
+      type: 'line',
+      data: {
+        labels: lineChartLabels,
+        datasets: [{
+          label: 'Average Rating',
+          data: lineChartData,
+          fill: false,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            suggestedMax: 5
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
         }
       }
     });

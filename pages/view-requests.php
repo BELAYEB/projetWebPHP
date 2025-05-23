@@ -46,6 +46,12 @@ $stmt = $pdo->query("SELECT id, title,status, type,  priority, LEFT(created_at, 
               <span>My Requests</span>
             </a>
           </li>
+          <li class="active">
+            <a href="client-feedback.php">
+              <i class="fas fa-list-alt"></i>
+              <span>Feedback</span>
+            </a>
+          </li>
 
 
         </ul>

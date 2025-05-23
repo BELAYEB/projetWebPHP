@@ -3,6 +3,7 @@ require_once 'config.php';
 $pdo = new PDO("mysql:host=localhost;dbname=support_system", "root", "");
 session_start();
 
+// Dashboard stats
 $stmt = $pdo->query("SELECT * FROM request");
 $totalRequests = $stmt->rowCount();
 
@@ -11,6 +12,12 @@ $totalrequestinprogress = $stmtinprogress->rowCount();
 
 $stmticompleted = $pdo->query("SELECT * FROM request WHERE status='completed'");
 $totalrequestcompleted = $stmticompleted->rowCount();
+
+// Recent requests
+$recentRequests = $pdo->query("SELECT id, title ,status,description FROM request ORDER BY created_at DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
+
+// Recent tasks
+$recentTasks = $pdo->query("SELECT id, title, description, assigned_to, status FROM task ORDER BY created_at DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -22,11 +29,16 @@ $totalrequestcompleted = $stmticompleted->rowCount();
   <title>Admin Dashboard - ContactFlow CRM</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .dashboard-table td {
+      word-wrap: break-word;
+      max-width: 250px;
+    }
+  </style>
 </head>
 
 <body>
   <div class="dashboard-container">
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <i class="fas fa-project-diagram logo-icon"></i>
@@ -35,9 +47,7 @@ $totalrequestcompleted = $stmticompleted->rowCount();
       </div>
       <div class="sidebar-content">
         <ul class="sidebar-menu">
-          <li class="active"><a href="admin-dashboard.php"><i
-                class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-          <li><a href="admin-requests.html"><i class="fas fa-ticket-alt"></i><span>Service Requests</span></a></li>
+          <li class="active"><a href="admin-dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
           <li><a href="admin-tasks.php"><i class="fas fa-tasks"></i><span>Task Board</span></a></li>
           <li><a href="admin-client.php"><i class="fas fa-users"></i><span>Clients</span></a></li>
           <li><a href="admin-members.php"><i class="fas fa-users"></i><span>Members</span></a></li>
@@ -49,10 +59,8 @@ $totalrequestcompleted = $stmticompleted->rowCount();
           <i class="fas fa-sign-out-alt"></i><span>Logout</span>
         </a>
       </div>
-
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
       <header class="content-header">
         <div class="header-left">
@@ -60,8 +68,7 @@ $totalrequestcompleted = $stmticompleted->rowCount();
         </div>
         <div class="header-right">
           <div class="user-profile">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s"
-              alt="User Avatar" id="userAvatar" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s" alt="User Avatar" id="userAvatar" />
             <span id="userName"><?= $_SESSION['user_name'] ?></span>
           </div>
         </div>
@@ -70,10 +77,6 @@ $totalrequestcompleted = $stmticompleted->rowCount();
       <div class="dashboard-content">
         <div class="dashboard-header">
           <h2>Welcome, <span><?= $_SESSION['user_name'] ?></span>!</h2>
-          <div class="dashboard-actions">
-            <button id="exportDataBtn" class="btn-secondary"><i class="fas fa-download"></i> Export Data</button>
-            <button id="importDataBtn" class="btn-secondary"><i class="fas fa-upload"></i> Import Data</button>
-          </div>
         </div>
 
         <div class="dashboard-stats">
@@ -107,107 +110,59 @@ $totalrequestcompleted = $stmticompleted->rowCount();
           </div>
         </div>
 
-        <!-- Widgets Section -->
-        <div class="admin-dashboard-widgets">
-          <!-- Recent Requests -->
-          <div class="widget">
-            <div class="widget-header">
-              <h3>Recent Requests</h3><button class="btn-icon widget-refresh"><i class="fas fa-sync-alt"></i></button>
-            </div>
-            <div class="widget-content">
-              <div class="request-list" id="recentRequestsList">
-                <div class="empty-state"><i class="fas fa-ticket-alt"></i>
-                  <p>No recent requests</p>
-                </div>
-              </div>
-            </div>
-            <div class="widget-footer"><a href="admin-requests.html">View All Requests</a></div>
-          </div>
-
-          <!-- Request Status Chart -->
-          <div class="widget">
-            <div class="widget-header">
-              <h3>Request Status</h3><button class="btn-icon widget-refresh"><i class="fas fa-sync-alt"></i></button>
-            </div>
-            <div class="widget-content"><canvas id="requestStatusChart"></canvas></div>
-          </div>
-
-          <!-- Recent Activity -->
-          <div class="widget">
-            <div class="widget-header">
-              <h3>Recent Activity</h3><button class="btn-icon widget-refresh"><i class="fas fa-sync-alt"></i></button>
-            </div>
-            <div class="widget-content">
-              <div class="activity-list" id="recentActivityList">
-                <div class="empty-state"><i class="fas fa-history"></i>
-                  <p>No recent activity</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Client Satisfaction -->
-          <div class="widget">
-            <div class="widget-header">
-              <h3>Client Satisfaction</h3><button class="btn-icon widget-refresh"><i
-                  class="fas fa-sync-alt"></i></button>
-            </div>
-            <div class="widget-content"><canvas id="satisfactionChart"></canvas></div>
+   <div class="admin-dashboard-widgets" style="display: grid; gap: 2rem; grid-template-columns: 1fr 1fr;">
+  
+  <!-- Recent Tasks -->
+  <div class="widget" style="background: #fff; padding: 1rem 1.5rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <div class="widget-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <h3 style="font-size: 1.2rem;">📝 Recent Tasks</h3>
+      <button class="btn-icon widget-refresh"><i class="fas fa-sync-alt"></i></button>
+    </div>
+    <?php if (count($recentTasks) > 0): ?>
+      <?php foreach ($recentTasks as $task): ?>
+        <div style="border-bottom: 1px solid #eee; padding: 0.8rem 0;">
+          <h4 style="margin: 0; font-size: 1rem; color: #333;"><?= htmlspecialchars($task['title']) ?></h4>
+          <p style="margin: 0.3rem 0; color: #666;"><?= htmlspecialchars($task['description']) ?></p>
+          <div style="font-size: 0.85rem; color: #555;">
+            👤 <?= htmlspecialchars($task['assigned_to']) ?> — 
+            <span style="color: <?= $task['status'] === 'completed' ? '#28a745' : ($task['status'] === 'in progress' ? '#ffc107' : '#dc3545') ?>;">
+              <?= htmlspecialchars($task['status']) ?>
+            </span>
           </div>
         </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <p style="color: #888;">No recent tasks</p>
+    <?php endif; ?>
+  </div>
+
+  <!-- Recent Requests -->
+  <div class="widget" style="background: #fff; padding: 1rem 1.5rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <div class="widget-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <h3 style="font-size: 1.2rem;">📨 Recent Requests</h3>
+      <button class="btn-icon widget-refresh"><i class="fas fa-sync-alt"></i></button>
+    </div>
+    <?php if (count($recentRequests) > 0): ?>
+      <?php foreach ($recentRequests as $req): ?>
+        <div style="border-bottom: 1px solid #eee; padding: 0.8rem 0;">
+          <h4 style="margin: 0; font-size: 1rem; color: #333;"><?= htmlspecialchars($req['title']) ?></h4>
+          <p style="margin: 0.3rem 0; color: #666;"><?= htmlspecialchars($req['description']) ?></p>
+          <div style="font-size: 0.85rem; color: #555;">
+            <span style="color: <?= $req['status'] === 'completed' ? '#28a745' : ($req['status'] === 'in progress' ? '#ffc107' : '#dc3545') ?>;">
+              <?= htmlspecialchars($req['status']) ?>
+            </span>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <p style="color: #888;">No recent requests</p>
+    <?php endif; ?>
+  </div>
+
+</div>
+
       </div>
     </main>
-  </div>
-
-  <!-- Notification Panel -->
-  <div id="notificationPanel" class="notification-panel">
-    <div class="notification-header">
-      <h3>Notifications</h3>
-      <button id="closeNotifications" class="btn-icon"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="notification-content">
-      <div id="notificationList">
-        <div class="empty-state"><i class="fas fa-bell-slash"></i>
-          <p>No notifications</p>
-        </div>
-      </div>
-    </div>
-    <div class="notification-footer">
-      <button id="markAllReadBtn" class="btn-text">Mark All as Read</button>
-      <button id="clearAllBtn" class="btn-text">Clear All</button>
-    </div>
-  </div>
-
-  <!-- Import Modal -->
-  <div id="importDataModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Import Data</h2><button class="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="importType">Select Import Type</label>
-          <select id="importType">
-            <option value="clients">Clients</option>
-            <option value="requests">Service Requests</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="importFile">Upload CSV File</label>
-          <input type="file" id="importFile" accept=".csv" />
-        </div>
-        <div class="import-preview">
-          <h4>Preview</h4>
-          <div id="importPreview" class="preview-content">
-            <p>No file selected</p>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary close-modal">Cancel</button>
-        <button id="confirmImportBtn" class="btn-primary">Import Data</button>
-      </div>
-    </div>
   </div>
 
   <!-- Scripts -->
@@ -218,5 +173,4 @@ $totalrequestcompleted = $stmticompleted->rowCount();
   <script src="../assets/js/exportUtils.js"></script>
   <script src="../assets/js/admin-dashboard.js"></script>
 </body>
-
 </html>
