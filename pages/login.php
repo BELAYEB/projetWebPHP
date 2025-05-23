@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: client-dashboard.php');
             } else {
                 // Par défaut pour 'member' ou autres rôles
-                header('Location: member-dashboard.html');
+                header('Location: member-dashboard.php');
 
             }
             exit;

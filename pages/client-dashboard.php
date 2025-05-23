@@ -44,7 +44,7 @@ $inprogressRequests = $inprogressStmt->rowCount();
             </a>
           </li>
           <li>
-            <a href="request-service.php">
+            <a href="request-service.html">
               <i class="fas fa-plus-circle"></i>
               <span>New Request</span>
             </a>
@@ -58,10 +58,10 @@ $inprogressRequests = $inprogressStmt->rowCount();
         </ul>
       </div>
       <div class="sidebar-footer">
-        <button id="logoutBtn" class="btn-logout">
+        <a id="logoutBtn" class="btn-logout" href="login.html">
           <i class="fas fa-sign-out-alt"></i>
           <span>Logout</span>
-        </button>
+        </a>
       </div>
     </aside>
 
@@ -72,7 +72,8 @@ $inprogressRequests = $inprogressStmt->rowCount();
         </div>
         <div class="header-right">
           <div class="user-profile">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s" alt="User Avatar" id="userAvatar" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s"
+              alt="User Avatar" id="userAvatar" />
             <span id="userName"><?= $_SESSION['user_name'] ?> </span>
           </div>
         </div>
@@ -83,7 +84,7 @@ $inprogressRequests = $inprogressStmt->rowCount();
           <h2>Welcome, <?= $_SESSION['user_name'] ?> </span>!</h2>
 
           <div class="dashboard-actions">
-         
+
           </div>
         </div>
 
@@ -148,7 +149,7 @@ $inprogressRequests = $inprogressStmt->rowCount();
               </div>
             </div>
             <div class="widget-footer">
-              <a href="view-requests.html">View All Requests</a>
+              <a href="request-service.html">View All Requests</a>
             </div>
           </div>
 

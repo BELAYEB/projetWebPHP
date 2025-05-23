@@ -41,21 +41,22 @@ $stmt = $pdo->query("SELECT id, title,status, type,  priority, LEFT(created_at, 
             </a>
           </li>
           <li class="active">
-            <a href="view-requests.html">
+            <a href="view-requests.php">
               <i class="fas fa-list-alt"></i>
               <span>My Requests</span>
             </a>
           </li>
-    
-     
+
+
         </ul>
       </div>
       <div class="sidebar-footer">
-        <button id="logoutBtn" class="btn-logout">
+        <a id="logoutBtn" class="btn-logout" href="login.html">
           <i class="fas fa-sign-out-alt"></i>
           <span>Logout</span>
-        </button>
+        </a>
       </div>
+
     </aside>
 
     <main class="main-content">
@@ -64,8 +65,9 @@ $stmt = $pdo->query("SELECT id, title,status, type,  priority, LEFT(created_at, 
           <h1>My Service Requests</h1>
         </div>
         <div class="header-right">
-         <div class="user-profile">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s" alt="User Avatar" id="userAvatar" />
+          <div class="user-profile">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzXq5qGKw0V-doQphkM0sAEemGQG0SU6l6ww&s"
+              alt="User Avatar" id="userAvatar" />
             <span id="userName"><?= $_SESSION['user_name'] ?> </span>
           </div>
         </div>
@@ -144,22 +146,17 @@ $stmt = $pdo->query("SELECT id, title,status, type,  priority, LEFT(created_at, 
                     <th>Type</th>
                     <th>Status</th>
                     <th>Priority</th>
-                    <th>Created</th>
-                    <th>Last updated</th>
-                    <th>actions</th>
+
                   </tr>
                 </thead>
                 <tbody id="requestsTableBody">
                   <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
                     <tr>
                       <td><?= htmlspecialchars($row['id']) ?></td>
-                      <td><?= htmlspecialchars($row['request_title']) ?></td>
-                      <td><?= htmlspecialchars($row['request_type']) ?></td>
+                      <td><?= htmlspecialchars($row['title']) ?></td>
+                      <td><?= htmlspecialchars($row['type']) ?></td>
                       <td><?= htmlspecialchars($row['status']) ?></td>
-                      <td><?= htmlspecialchars($row['request_priority']) ?></td>
-                      <td><?= htmlspecialchars($row['created_at']) ?></td>
-                      <td><?= htmlspecialchars($row['last_updated']) ?></td>
-                      <td><?= htmlspecialchars($row['actions']) ?></td>
+                      <td><?= htmlspecialchars($row['priority']) ?></td>
                     </tr>
                   <?php endwhile; ?>
                 </tbody>

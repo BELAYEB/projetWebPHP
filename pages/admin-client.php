@@ -29,12 +29,12 @@ session_start();
       </div>
       <div class="sidebar-content">
         <ul class="sidebar-menu">
-          <li><a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+          <li><a href="admin-dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
           <li><a href="admin-requests.html"><i class="fas fa-ticket-alt"></i><span>Service Requests</span></a></li>
-          <li><a href="admin-tasks.html"><i class="fas fa-tasks"></i><span>Task Board</span></a></li>
-          <li><a href="admin-client.html"><i class="fas fa-users"></i><span>Clients</span></a></li>
+          <li><a href="admin-tasks.php"><i class="fas fa-tasks"></i><span>Task Board</span></a></li>
+          <li><a href="admin-client.php"><i class="fas fa-users"></i><span>Clients</span></a></li>
           <li><a href="admin-members.php"><i class="fas fa-users"></i><span>Members</span></a></li>
-          <li><a href="admin-analytics.html"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
+          <li><a href="admin-analytics.php"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
         </ul>
       </div>
       <div class="sidebar-footer">
@@ -64,8 +64,9 @@ session_start();
         <table class="client-table">
           <thead>
             <tr>
-              <th>ID</th> <!-- Added ID header -->
+              <th>ID</th>
               <th>Name</th>
+              <th>All Tasks</th>
               <th>Tasks Completed</th>
               <th>Tasks In Progress</th>
               <th>Tasks To Do</th>
@@ -73,22 +74,65 @@ session_start();
           </thead>
           <tbody>
             <?php
-            $clientstmt = $pdo->query("SELECT id, name FROM users WHERE role='client'");
+            $clientstmt = $pdo->query("SELECT id, name FROM users WHERE role = 'client'");
             $clients = $clientstmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Task counts by status
+            $taskStatusStmt = $pdo->prepare("
+        SELECT 
+          status,
+          COUNT(*) AS task_count
+        FROM request
+        WHERE client_id = ?
+        GROUP BY status
+      ");
+
+            // Total task count
+            $totalTaskStmt = $pdo->prepare("
+        SELECT COUNT(*) AS total_tasks FROM request WHERE client_id = ?
+      ");
+
             foreach ($clients as $client) {
+              $completed = $inProgress = $toDo = 0;
+
+              // Get total tasks
+              $totalTaskStmt->execute([$client['id']]);
+              $totalTasks = $totalTaskStmt->fetch(PDO::FETCH_ASSOC)['total_tasks'] ?? 0;
+
+              // Get task counts by status
+              $taskStatusStmt->execute([$client['id']]);
+              $tasks = $taskStatusStmt->fetchAll(PDO::FETCH_ASSOC);
+
+              foreach ($tasks as $task) {
+                switch ($task['status']) {
+                  case 'completed':
+                    $completed = $task['task_count'];
+                    break;
+                  case 'in progress':
+                    $inProgress = $task['task_count'];
+                    break;
+                  case 'to_do':
+                    $toDo = $task['task_count'];
+                    break;
+                }
+              }
+
               echo "<tr>";
-              echo "<td>" . htmlspecialchars($client['id']) . "</td>";        // Display ID
+              echo "<td>" . htmlspecialchars($client['id']) . "</td>";
               echo "<td>" . htmlspecialchars($client['name']) . "</td>";
-              echo "<td>0</td>";
-              echo "<td>0</td>";
-              echo "<td>0</td>";
+              echo "<td>" . $totalTasks . "</td>";
+              echo "<td>" . $completed . "</td>";
+              echo "<td>" . $inProgress . "</td>";
+              echo "<td>" . $toDo . "</td>";
               echo "</tr>";
             }
             ?>
           </tbody>
         </table>
       </section>
+
+
+
     </main>
   </div>
 

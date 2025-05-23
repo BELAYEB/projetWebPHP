@@ -1,143 +1,130 @@
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Service Request - ContactFlow CRM</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <i class="fas fa-project-diagram logo-icon"></i>
+          <h2>ContactFlow</h2>
+        </div>
+        <div class="sidebar-content">
+          <ul class="sidebar-menu">
+            <li>
+              <a href="client-dashboard.php"
+                ><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a
+              >
+            </li>
+            <li class="active">
+              <a href="request-service.php"
+                ><i class="fas fa-plus-circle"></i><span>New Request</span></a
+              >
+            </li>
+            <li>
+              <a href="view-requests.php"
+                ><i class="fas fa-list-alt"></i><span>My Requests</span></a
+              >
+            </li>
+          </ul>
+        </div>
+      </aside>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>New Service Request - ContactFlow CRM</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
-
-<body>
-  <div class="dashboard-container">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <i class="fas fa-project-diagram logo-icon"></i>
-        <h2>ContactFlow</h2>
-        <button id="toggleSidebar" class="toggle-sidebar">
-          <i class="fas fa-bars"></i>
-        </button>
-      </div>
-      <div class="sidebar-content">
-        <ul class="sidebar-menu">
-          <li>
-            <a href="client-dashboard.php">
-              <i class="fas fa-tachometer-alt"></i>
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li class="active">
-            <a href="request-service.php">
-              <i class="fas fa-plus-circle"></i>
-              <span>New Request</span>
-            </a>
-          </li>
-          <li>
-            <a href="view-requests.php">
-              <i class="fas fa-list-alt"></i>
-              <span>My Requests</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="sidebar-footer">
-        <button id="logoutBtn" class="btn-logout">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
-        </button>
-      </div>
-    </aside>
-
-    <main class="main-content">
-      <header class="content-header">
-        <div class="header-left">
+      <main class="main-content">
+        <header class="content-header">
           <h1>New Service Request</h1>
-        </div>
-        <div class="header-right">
-          <div class="user-profile">
-            <img src="" alt="User Avatar" id="userAvatar" />
-            <span id="userName">Name</span>
-          </div>
-        </div>
-      </header>
+        </header>
 
-      <div class="content-body">
-        <div class="card">
-          <div class="card-header">
-            <h2>Create New Service Request</h2>
-          </div>
-          <div class="card-body">
-            <form id="serviceRequestForm" action="/projet-web/assets/backend/submit_request.php" method="POST">
-              <div class="form-group">
-                <label for="requestTitle">Request Title</label>
-                <input type="text" id="requestTitle" name="requestTitle" required
-                  placeholder="Enter a title for your request" />
-              </div>
-
-              <div class="form-row">
+        <div class="content-body">
+          <div class="card">
+            <div class="card-header"><h2>Create New Service Request</h2></div>
+            <div class="card-body">
+              <form
+                id="serviceRequestForm"
+                action="submit_request.php"
+                method="POST"
+                enctype="multipart/form-data"
+              >
                 <div class="form-group">
-                  <label for="requestType">Request Type</label>
-                  <select id="requestType" name="requestType" required>
-                    <option value="">Select a request type</option>
-                    <option value="support">Technical Support</option>
-                    <option value="inquiry">Product Inquiry</option>
-                    <option value="billing">Billing Issue</option>
-                    <option value="feature">Feature Request</option>
-                    <option value="other">Other</option>
-                  </select>
+                  <label for="requestTitle">Request Title</label>
+                  <input
+                    type="text"
+                    id="requestTitle"
+                    name="requestTitle"
+                    required
+                    placeholder="Enter a title for your request"
+                  />
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="requestType">Request Type</label>
+                    <select id="requestType" name="requestType" required>
+                      <option value="">Select a request type</option>
+                      <option value="support">Technical Support</option>
+                      <option value="inquiry">Product Inquiry</option>
+                      <option value="billing">Billing Issue</option>
+                      <option value="feature">Feature Request</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority" name="priority" required>
+                      <option value="">Select priority</option>
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                      <option value="urgent">Urgent</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div class="form-group">
-                  <label for="priority">Priority</label>
-                  <select id="priority" name="priority" required>
-                    <option value="">Select priority</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="urgent">Urgent</option>
-                  </select>
+                  <label for="requestDescription">Description</label>
+                  <textarea
+                    id="requestDescription"
+                    name="requestDescription"
+                    rows="5"
+                    required
+                    placeholder="Describe your request in detail"
+                  ></textarea>
                 </div>
-              </div>
 
-              <div class="form-group">
-                <label for="requestDescription">Description</label>
-                <textarea id="requestDescription" name="requestDescription" rows="5" required
-                  placeholder="Describe your request in detail"></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="attachments">Attachments (Optional)</label>
-                <div class="file-upload">
-                  <input type="file" id="attachments" name="attachments" multiple />
-                  <label for="attachments" class="file-upload-label">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Choose files or drag & drop</span>
-                  </label>
+                <div class="form-group">
+                  <label for="attachments">Attachments (Optional)</label>
+                  <input
+                    type="file"
+                    id="attachments"
+                    name="attachments[]"
+                    multiple
+                  />
                 </div>
-                <div id="fileList" class="file-list"></div>
-              </div>
 
-              <div class="form-actions">
-                <button type="button" id="cancelRequestBtn" class="btn-secondary">
-                  Cancel
-                </button>
-                <button type="submit" class="btn-primary">
-                  Submit Request
-                </button>
-              </div>
-            </form>
+                <div class="form-actions">
+                  <button type="reset" class="btn-secondary">Cancel</button>
+                  <button type="submit" class="btn-primary">
+                    Submit Request
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
-  </div>
+      </main>
+    </div>
 
-  <div id="notification" class="notification"></div>
-
-  <script src="../assets/js/localStorage.js"></script>
-  <script src="../assets/js/auth.js"></script>
-  <script src="../assets/js/domUtils.js"></script>
-  <script src="../assets/js/request-service.js"></script>
-</body>
-
+    <script src="../assets/js/localStorage.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/domUtils.js"></script>
+  </body>
 </html>

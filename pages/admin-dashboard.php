@@ -35,18 +35,21 @@ $totalrequestcompleted = $stmticompleted->rowCount();
       </div>
       <div class="sidebar-content">
         <ul class="sidebar-menu">
-          <li class="active"><a href="admin-dashboard.html"><i
+          <li class="active"><a href="admin-dashboard.php"><i
                 class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
           <li><a href="admin-requests.html"><i class="fas fa-ticket-alt"></i><span>Service Requests</span></a></li>
           <li><a href="admin-tasks.php"><i class="fas fa-tasks"></i><span>Task Board</span></a></li>
-          <li><a href="admin-clients.html"><i class="fas fa-users"></i><span>Clients</span></a></li>
+          <li><a href="admin-client.php"><i class="fas fa-users"></i><span>Clients</span></a></li>
           <li><a href="admin-members.php"><i class="fas fa-users"></i><span>Members</span></a></li>
-          <li><a href="admin-analytics.html"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
+          <li><a href="admin-analytics.php"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
         </ul>
       </div>
       <div class="sidebar-footer">
-        <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+        <a href="login.html" class="btn-logout">
+          <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+        </a>
       </div>
+
     </aside>
 
     <!-- Main Content -->
