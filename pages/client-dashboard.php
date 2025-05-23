@@ -44,7 +44,7 @@ $inprogressRequests = $inprogressStmt->rowCount();
             </a>
           </li>
           <li>
-            <a href="request-service.html">
+            <a href="request-service.php">
               <i class="fas fa-plus-circle"></i>
               <span>New Request</span>
             </a>
